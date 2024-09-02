@@ -68,33 +68,27 @@ export const LoginForm = () => {
     setSuccess("");    
 
     startTransition(() => {
-      login(values)
-        .then((data) => {
-          if (data?.error) {
-            setError(data.error);
-            toast({
-              title: "Login Failed",
-              description: data.message ? data.message : "Request Failed, Try Again",
-              action: (
-                <ToastAction altText="Dismiss">Dismiss</ToastAction>
-               )
-            })
-            form.reset();
-          }
+      login(values).then((response) => {
+        if (response.error) {
+          setError(response.message);
+          toast({
+            title: "Error",
+            description: response.message,
+            duration: 9000,
+          });
+          return;
+        }
 
-          if (data?.success) {
-            form.reset();
-            setSuccess(data.success);
-            toast({
-              title: "Login Success",
-              description: data.message ? data.message : "Welcome to Panaversity",
-              action: (
-               <ToastAction altText="Close">Close</ToastAction>
-              ),
-            })
-            router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT );
-          }
-        })
+        setSuccess(response.message);
+
+        toast({
+          title: "Success",
+          description: response.message,
+          duration: 9000,
+        });
+
+        router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT);
+      });
     });
   };
 

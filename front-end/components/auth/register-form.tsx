@@ -5,7 +5,8 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ToastAction } from "@/components/ui/toast"
-
+import ReactPhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import { RegisterSchema } from "@/schemas/userschema";
 import { Input } from "@/components/ui/input";
 import {
@@ -156,11 +157,14 @@ export const RegisterForm = () => {
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
+                    <ReactPhoneInput
+                      country={'pk'} // Default country
+                      value={field.value}
+                      onChange={(phone) => field.onChange(phone)}
                       disabled={isPending}
                       placeholder="+921234567890"
-                      type="tel"
+                      buttonStyle={{ backgroundColor: '#f9fafb' }}
+                      inputStyle={{ width: '100%' }}
                     />
                   </FormControl>
                   <FormMessage />
