@@ -24,10 +24,6 @@ import { login } from "@/src/actions/login";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
-import { googleAuthenticate } from "@/src/actions/index"
-import { useFormState } from "react-dom"
-
-// import SingInButton from "@/src/components/google/siginInButton";
 
 import Link from "next/link";
 
@@ -59,7 +55,7 @@ export const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter()
   const { toast } = useToast()
-  const [errorMsgGoogle, dispatchGoogle] = useFormState(googleAuthenticate, undefined)
+
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),

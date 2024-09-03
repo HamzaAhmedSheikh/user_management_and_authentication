@@ -1,4 +1,4 @@
-import { handlers } from "@/src/auth";
+// import { handlers } from "@/src/auth";
 
-export const { GET, POST } = handlers
+// export const { GET, POST } = handlers
 

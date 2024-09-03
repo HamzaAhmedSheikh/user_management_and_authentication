@@ -1,6 +1,5 @@
 import { LoginForm } from "@/src/components/auth/Login-form";
 import { Suspense } from "react";
-import SignInButton from "@/src/components/google/siginInButton";
 
 const LoginPage = () => {
   return (
@@ -10,9 +9,6 @@ const LoginPage = () => {
         <LoginForm />
         
       </Suspense>
-    </div>
-    <div>
-    <SignInButton /> 
     </div>
     </>
   );
