@@ -22,7 +22,8 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         "full_name": fullname,
         "password": password,
         "phone": phone,
-        "affiliation": affiliation
+        "affiliation": affiliation,
+        "user_type": "visitor"
     }),
     cache: "no-store",
   });

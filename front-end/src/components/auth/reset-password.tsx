@@ -1,4 +1,5 @@
 "use client"
+import {VerifyNumberSchema} from "@/src/schemas/userschema";
 import {RecoverPasswordSchema} from "@/src/schemas/userschema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
@@ -12,21 +13,24 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/
 import { Input } from "../ui/input";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
-
+import ReactPhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { redirect, useRouter } from "next/navigation";
 
 function ResetPassword() {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("")
     const { toast } = useToast();
+    const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const form = useForm<z.infer<typeof RecoverPasswordSchema>>({
-        resolver: zodResolver(RecoverPasswordSchema),
+    const form = useForm<z.infer<typeof VerifyNumberSchema>>({
+        resolver: zodResolver(VerifyNumberSchema),
         defaultValues: {
-            email: "",
+            phone: "",
         },
     });
     
-    const onSubmit = (values: z.infer<typeof RecoverPasswordSchema>) => {
+    const onsubmit = (values: z.infer<typeof VerifyNumberSchema>) => {
         setError("");
         setSuccess("");
         
@@ -44,9 +48,10 @@ function ResetPassword() {
                 }
                 if (data?.success) {
                     toast({
-                      title: "Password Reset Success",
-                      description: "Please Check Your Email!",
+                        title: "OTP sent Successfully",
+                        description: "OTP has been sent to your phone number",
                     })
+                    router.replace('/auth/update-password')
                   }
             });
         });
@@ -57,35 +62,35 @@ function ResetPassword() {
         headerLabel="Reset Password"
         >
             <FormProvider {...form}>
-             
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
-                    <div className="space-y-4">
-                        <>
-                            <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input
-                                    {...field}
-                                    disabled={isPending}
-                                    placeholder="example@gmail.com"
-                                    type="email"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
+                <form onSubmit={form.handleSubmit(onsubmit)} className="space-y-6">
+                <FormError message={error} />
+                <FormSuccess message={success} />
+                <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Phone</FormLabel>
+                        <FormControl>
+                            <ReactPhoneInput
+                            country={'pk'}
+                            value={field.value}
+                            onChange={(phone) => field.onChange(phone)}
+                            disabled={isPending}
+                            placeholder="+921234567890"
+                            buttonStyle={{ backgroundColor: '#f9fafb' }}
+                            inputStyle={{ width: '100%' }}
+                            countryCodeEditable={false}
                             />
-                        </>
-                    </div>
-                    <FormError message={error} />
-                    <FormSuccess message={success}  />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
                     <Button disabled={isPending} type="submit" className="w-full">
-                        {"Reset Password"}
+                        Send OTP
                     </Button>
+                    <FormError message={error} />
                 </form>
              
             </FormProvider>

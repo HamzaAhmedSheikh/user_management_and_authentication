@@ -1,27 +1,27 @@
 "use server";
 import * as z from "zod";
+import { VerifyNumberSchema } from "@/src/schemas/userschema";
 import { RecoverPasswordSchema } from "@/src/schemas/userschema";
 
-export const resetpassword = async (values: z.infer<typeof RecoverPasswordSchema>) => {
-  const validatedFields = RecoverPasswordSchema.safeParse(values);
+export const resetpassword = async (values: z.infer<typeof VerifyNumberSchema>) => {
+  const validatedFields = VerifyNumberSchema.safeParse(values);
 
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
 
-  const { email} = validatedFields.data;
-
+  const { phone } = validatedFields.data;
+  console.log(phone.toString())
   // Send Data in JSON Format
-  const reset_request = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/password-reset`, {
+  const reset_request = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/auth/request-otp?phone=${phone}`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "accept": "application/json"
     },
-    body: JSON.stringify({
-        "email": email
-    }),
     cache: "no-store",
   });
+
+  console.log(reset_request)
 
   console.log('reset_request', reset_request.status, reset_request.statusText);
 
@@ -30,5 +30,5 @@ export const resetpassword = async (values: z.infer<typeof RecoverPasswordSchema
     return { error: error.detail };
   }
 
-  return { success: "Password Reset Success - Please Check Your Email!" };
+  return { success: "OTP sent successfully" };
 };

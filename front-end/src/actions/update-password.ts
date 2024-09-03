@@ -1,8 +1,6 @@
 "use server";
 import * as z from "zod";
 import { UpdatePasswordSchema } from "@/src/schemas/userschema";
-import { auth } from "@/src/auth";
-import { redirect } from "next/navigation";
 
 export const updatepassword = async (values: z.infer<typeof UpdatePasswordSchema>) => {
   const validatedFields = UpdatePasswordSchema.safeParse(values);
@@ -11,26 +9,14 @@ export const updatepassword = async (values: z.infer<typeof UpdatePasswordSchema
     return { error: "Invalid fields!" };
   }
 
-  const { current_password, new_password } = validatedFields.data;
-
-  const session = await auth();
-
-  if (!session) {
-      console.log("[session] No cookies. Redirecting...");
-      redirect('/auth/login')
-  }
+  const { otp, phone, new_password } = validatedFields.data;
 
   // Send Data in JSON Format
-  const update_password = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/password-update`, {
+  const update_password = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/auth/verify-otp-update-password?phone=${phone}&otp=${otp}&new_password=${new_password}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${session.access_token}`,
     },
-    body: JSON.stringify({
-        "current_password": current_password,
-        "new_password": new_password
-    }),
     cache: "no-store",
   });
 

@@ -1,6 +1,5 @@
 import * as z from "zod";
 
-
 export const LoginSchema = z.object({
   email: z.string().email({
     message: "Email is required",
@@ -30,10 +29,19 @@ export const RecoverPasswordSchema = z.object({
     }),
 });
 
+export const VerifyNumberSchema = z.object({
+  phone: z.string().min(6, {
+      message: "Phone number is required",
+  }),
+});
+
 export const UpdatePasswordSchema = z.object({
-  current_password: z.string().min(6, {
-        message: "Password is required",
-    }),
+  otp: z.string().length(6, {
+      message: "OTP is required",
+  }),
+  phone: z.string().min(6, {
+      message: "Phone number is required",
+  }),
   new_password: z.string().min(6, {
       message: "New Password is required",
   }),

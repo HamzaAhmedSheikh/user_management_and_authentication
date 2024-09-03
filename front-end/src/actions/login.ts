@@ -16,19 +16,23 @@ export const login = async (
   const { email, password } = validatedFields.data;
 
   try {
-    const request_form_data = new FormData();
-    request_form_data.append("email", email);
-    request_form_data.append("password", password);
 
     const user = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/user/login`, {
       method: "POST",
-      body: request_form_data,
+      body: JSON.stringify({ email, password }),
       cache: "no-store",
+      headers: {
+        "Content-Type": "application/json"
+      },
     });
 
     if (!user || user.status !== 200) {
-      throw new Error(user.statusText);
-    };
+        if (user.status === 401) {
+          return { error: "Incorrect email or password", message: "Incorrect email or password" };
+        } else {
+          throw new Error("An error occurred while trying to login");
+        }
+      }
 
     const user_data = await user.json();
 
@@ -49,7 +53,7 @@ export const login = async (
       httpOnly: true,
     });
 
-    return { success: "Authenticated!", message: `Welcome ${updated_user_data.user.full_name}` };
+    return { success: "Authenticated!", message: `Welcome` };
   } catch (error) {
     if (error instanceof Error) {
           return { error: "Invalid credentials!", message: error.message };

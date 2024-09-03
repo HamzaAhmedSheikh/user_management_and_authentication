@@ -1,7 +1,9 @@
 "use client"
-import {UpdatePasswordSchema} from "@/src/schemas/userschema";
+import {UpdatePasswordSchema, VerifyNumberSchema} from "@/src/schemas/userschema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
+import ReactPhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import * as z from "zod";
 import { useToast } from "../ui/use-toast";
 import { useState, useTransition } from "react";
@@ -12,20 +14,50 @@ import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { CardWrapper } from "./card-wrapper";
 import { updatepassword } from "@/src/actions/update-password";
+import { useRouter } from "next/navigation";
+import { resetpassword } from "@/src/actions/recover-password";
 import { redirect } from "next/navigation";
 
 function UpdatePassword() {
+    const router = useRouter();
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("")
+    const [phone, setPhone] = useState<string | undefined>("")
     const { toast } = useToast();
     const [isPending, startTransition] = useTransition();
     const form = useForm<z.infer<typeof UpdatePasswordSchema>>({
         resolver: zodResolver(UpdatePasswordSchema),
         defaultValues: {
-            current_password: "",
+            otp: "",
+            phone: "",
             new_password: ""
         },
     });
+
+    const sendOTP = (values: z.infer<typeof VerifyNumberSchema>) => {
+        setError("");
+        setSuccess("");
+        startTransition(() => {
+            resetpassword(values).then((data) => {
+                setError(data.error);
+                setSuccess(data.success);
+                if (data?.error) {
+                    form.reset();
+                    toast({
+                      title: "Request Failed",
+                      description: data?.error,
+                      variant: "destructive",
+                    })
+                }
+                if (data?.success) {
+                    toast({
+                        title: "OTP sent Successfully",
+                        description: "OTP has been sent to your phone number",
+                    })
+                  }
+            });
+        });
+    }
     
     const onSubmit = (values: z.infer<typeof UpdatePasswordSchema>) => {
         setError("");
@@ -48,7 +80,7 @@ function UpdatePassword() {
                       title: "Password updated Successfully",
                       description: "You have successfully updated your password",
                     })
-                    redirect('/login')
+                    router.push('/login')
                   }
             });
         });
@@ -64,16 +96,47 @@ function UpdatePassword() {
                         <>
                             <FormField
                                 control={form.control}
-                                name="current_password"
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem >
+                                    <FormLabel>Phone</FormLabel>
+                                <div className="flex  items-center w-full">
+                                    <FormControl>
+                                        <ReactPhoneInput
+                                        country={'pk'}
+                                        value={field.value}
+                                        onChange={(phone) => {field.onChange(phone); setPhone(phone)}}
+                                        disabled={isPending}
+                                        placeholder="+921234567890"
+                                        buttonStyle={{ backgroundColor: '#f9fafb' }}
+                                        inputStyle={{ width: '100%' }}
+                                        countryCodeEditable={false}
+                                        />
+                                    </FormControl>
+                                    <Button
+                                    size="sm"
+                                    variant="link"
+                                    // asChild
+                                    onClick={() => sendOTP({phone})}
+                                    >
+                                        Send OTP
+                                    </Button>
+                            </div>
+                            <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="otp"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Current Password</FormLabel>
+                                    <FormLabel>OTP</FormLabel>
                                     <FormControl>
                                         <Input
                                         {...field}
                                         disabled={isPending}
-                                        placeholder="******"
-                                        type="password"
+                                        placeholder="1234"
                                         />
                                     </FormControl>
                                     <FormMessage />
