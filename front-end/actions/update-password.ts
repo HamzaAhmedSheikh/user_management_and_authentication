@@ -17,7 +17,7 @@ export const updatepassword = async (values: z.infer<typeof UpdatePasswordSchema
 
   if (!session) {
       console.log("[session] No cookies. Redirecting...");
-      redirect('/auth/login')
+      redirect('/login')
   }
 
   // Send Data in JSON Format

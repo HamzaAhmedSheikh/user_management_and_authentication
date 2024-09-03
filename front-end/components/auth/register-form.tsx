@@ -9,6 +9,7 @@ import ReactPhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { RegisterSchema } from "@/schemas/userschema";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -40,7 +41,7 @@ export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast()
   const searchParams = useSearchParams();
-
+  const router = useRouter();
   // Get all the query params
   const redirect_uri = searchParams.get("redirect_uri");
   const client_id = searchParams.get("client_id");
@@ -57,7 +58,7 @@ export const RegisterForm = () => {
         password: "",
         fullname: "",
         phone: "",
-        affiliation: ""
+        affiliation: "None",
     },
   });
 
@@ -85,6 +86,7 @@ export const RegisterForm = () => {
               <Link href={redirect_uri ? `/login${queryParams}` : "/login"}><ToastAction altText="Login to Continue!">Login Now</ToastAction></Link> 
             ),
           })
+          router.push("/login"); 
         }
       });
     });
@@ -158,13 +160,14 @@ export const RegisterForm = () => {
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <ReactPhoneInput
-                      country={'pk'} // Default country
+                      country={'pk'}
                       value={field.value}
                       onChange={(phone) => field.onChange(phone)}
                       disabled={isPending}
                       placeholder="+921234567890"
                       buttonStyle={{ backgroundColor: '#f9fafb' }}
                       inputStyle={{ width: '100%' }}
+                      countryCodeEditable={false}
                     />
                   </FormControl>
                   <FormMessage />
