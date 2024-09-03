@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth } from "./src/auth";
+import { auth } from "./auth";
 
 export async function middleware(req: NextRequest) {
   // Define protected routes

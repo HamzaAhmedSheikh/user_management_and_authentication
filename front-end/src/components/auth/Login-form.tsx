@@ -69,98 +69,38 @@ export const LoginForm = () => {
     },    
   });
 
-  // const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-  //   setError("");
-  //   setSuccess("");    
-
-  //   startTransition(() => {
-  //     login(values)
-  //       .then((data) => {
-  //         if (data?.error) {
-  //           setError(data.error);
-  //           toast({
-  //             title: "Login Failed",
-  //             description: data.message ? data.message : "Request Failed, Try Again",
-  //             action: (
-  //               <ToastAction altText="Dismiss">Dismiss</ToastAction>
-  //              )
-  //           })
-  //           form.reset();
-  //         }
-
-  //         if (data?.success) {
-  //           form.reset();
-  //           setSuccess(data.success);
-  //           toast({
-  //             title: "Login Success",
-  //             description: data.message ? data.message : "Welcome to Panaversity",
-  //             action: (
-  //              <ToastAction altText="Close">Close</ToastAction>
-  //             ),
-  //           })
-  //           router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT );
-  //         }
-  //       })
-  //   });
-  // };
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
-<<<<<<< HEAD:src/components/auth/Login-form.tsx
     setSuccess("");    
 
     startTransition(() => {
-      login(values).then((response) => {
-        if (response.error) {
-          setError(response.message);
-          toast({
-            title: "Error",
-            description: response.message,
-            duration: 9000,
-          });
-          return;
-        }
+      login(values)
+        .then((data) => {
+          if (data?.error) {
+            setError(data.error);
+            toast({
+              title: "Login Failed",
+              description: data.message ? data.message : "Request Failed, Try Again",
+              action: (
+                <ToastAction altText="Dismiss">Dismiss</ToastAction>
+               )
+            })
+            form.reset();
+          }
 
-        setSuccess(response.message);
-
-        toast({
-          title: "Success",
-          description: response.message,
-          duration: 9000,
-        });
-
-        router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT);
-      });
-=======
-    setSuccess("");
-  
-    startTransition(async () => {
-      const result = await signIn("credentials", {
-        email: values.email,
-        password: values.password,
-        redirect: false,
-        callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
-      });
-  
-      if (result?.error) {
-        setError(result.error);
-        toast({
-          title: "Login Failed",
-          description: result.error || "Request Failed, Try Again",
-          action: <ToastAction altText="Dismiss">Dismiss</ToastAction>,
-        });
-        form.reset();
-      }
-  
-      if (result?.ok) {
-        setSuccess("Login successful!");
-        toast({
-          title: "Login Success",
-          description: "Welcome to Panaversity",
-          action: <ToastAction altText="Close">Close</ToastAction>,
-        });
-        router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT);
-      }
->>>>>>> 9224fd5b86eff6e9a8302b71b0e048c161ac0888:components/auth/Login-form.tsx
+          if (data?.success) {
+            form.reset();
+            setSuccess(data.success);
+            toast({
+              title: "Login Success",
+              description: data.message ? data.message : "Welcome to Panaversity",
+              action: (
+               <ToastAction altText="Close">Close</ToastAction>
+              ),
+            })
+            router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT );
+          }
+        })
     });
   };
 

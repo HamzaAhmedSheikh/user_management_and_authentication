@@ -63,8 +63,6 @@ function ResetPassword() {
         >
             <FormProvider {...form}>
                 <form onSubmit={form.handleSubmit(onsubmit)} className="space-y-6">
-                <FormError message={error} />
-                <FormSuccess message={success} />
                 <FormField
                     control={form.control}
                     name="phone"
@@ -83,13 +81,13 @@ function ResetPassword() {
                             countryCodeEditable={false}
                             />
                         </FormControl>
-                        <FormMessage />
                         </FormItem>
                     )}
                 />
                     <Button disabled={isPending} type="submit" className="w-full">
                         Send OTP
                     </Button>
+                    <FormSuccess message={success} />
                     <FormError message={error} />
                 </form>
              

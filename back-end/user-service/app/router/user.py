@@ -1,6 +1,6 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Request
-from app.models.user import User, UserCreate, UserType, UserRead
+from app.models.user import User, UserCreate, UserType, UserRead, UserLogin
 from app.models.auth_token import AuthToken
 from app.models.teacher import Teacher
 from fastapi.security import OAuth2PasswordRequestForm
@@ -58,10 +58,10 @@ async def register_user(new_user: UserCreate, session: Session = Depends(get_ses
 
 @user_router.post("/login")
 async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    form_data: UserLogin,
     session: Session = Depends(get_session)
 ):
-    user = authenticate_user(session, form_data.username, form_data.password)
+    user = authenticate_user(session, form_data.email, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

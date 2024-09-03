@@ -14,6 +14,9 @@ class UserType(str, Enum):
     VISITOR = "visitor"
     TEACHER = "teacher"
 
+class UserLogin(SQLModel):
+    email: str
+    password: str
 
 class UserBase(SQLModel):
     full_name: str
