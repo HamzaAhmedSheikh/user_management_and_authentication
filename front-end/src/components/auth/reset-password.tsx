@@ -1,5 +1,6 @@
 "use client"
 import {VerifyNumberSchema} from "@/src/schemas/userschema";
+import {RecoverPasswordSchema} from "@/src/schemas/userschema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -91,6 +92,7 @@ function ResetPassword() {
                     </Button>
                     <FormError message={error} />
                 </form>
+             
             </FormProvider>
         </CardWrapper>
     )

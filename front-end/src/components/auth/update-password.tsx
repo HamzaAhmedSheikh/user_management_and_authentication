@@ -16,6 +16,7 @@ import { CardWrapper } from "./card-wrapper";
 import { updatepassword } from "@/src/actions/update-password";
 import { useRouter } from "next/navigation";
 import { resetpassword } from "@/src/actions/recover-password";
+import { redirect } from "next/navigation";
 
 function UpdatePassword() {
     const router = useRouter();

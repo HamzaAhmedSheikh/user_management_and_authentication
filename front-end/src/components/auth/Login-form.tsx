@@ -24,6 +24,11 @@ import { login } from "@/src/actions/login";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
+import { googleAuthenticate } from "@/src/actions/index"
+import { useFormState } from "react-dom"
+
+// import SingInButton from "@/src/components/google/siginInButton";
+
 import Link from "next/link";
 
 export const LoginForm = () => {
@@ -54,13 +59,14 @@ export const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter()
   const { toast } = useToast()
+  const [errorMsgGoogle, dispatchGoogle] = useFormState(googleAuthenticate, undefined)
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
-    },
+    },    
   });
 
   // const onSubmit = (values: z.infer<typeof LoginSchema>) => {
@@ -163,7 +169,7 @@ export const LoginForm = () => {
       headerLabel="Login"
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
+        <form onSubmit={form.handleSubmit(onSubmit)}  className="space-y-6 ">
           <div className="space-y-4">
               <>
                 <FormField
@@ -216,7 +222,8 @@ export const LoginForm = () => {
           <FormSuccess message={success}  />
           <Button disabled={isPending} type="submit" className="w-full">
             {"Login"}
-          </Button>
+          </Button>         
+      
           <Button
             size="sm"
             variant="link"
@@ -227,6 +234,8 @@ export const LoginForm = () => {
           </Button>
         </form>
       </Form>
+
+      
     </CardWrapper>
   );
 };

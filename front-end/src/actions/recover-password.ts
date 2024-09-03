@@ -1,6 +1,7 @@
 "use server";
 import * as z from "zod";
 import { VerifyNumberSchema } from "@/src/schemas/userschema";
+import { RecoverPasswordSchema } from "@/src/schemas/userschema";
 
 export const resetpassword = async (values: z.infer<typeof VerifyNumberSchema>) => {
   const validatedFields = VerifyNumberSchema.safeParse(values);
