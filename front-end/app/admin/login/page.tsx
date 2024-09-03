@@ -1,4 +1,4 @@
-import AcmeLogo from '@/app/admin/ui/acme-logo';
+import AcmeLogo from '@/app/admin/ui/panaverse-logo';
 import LoginForm from '@/app/admin/ui/login-form';
 import { Metadata } from 'next';
 
