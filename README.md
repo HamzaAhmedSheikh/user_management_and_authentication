@@ -11,8 +11,7 @@ Handles all operations related to user registration, authentication, profile man
 
 ## Frontend
 - **Framework**: Next.js
-- **Authentication**: NextAuth
-
+  
 ## Features
 - User registration and login
 - OAuth authorization
