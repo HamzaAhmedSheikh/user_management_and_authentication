@@ -26,6 +26,6 @@ export const updatepassword = async (values: z.infer<typeof UpdatePasswordSchema
     const error = await update_password.json();
     return { error: error.detail };
   }
-
+  
   return { success: "Password Updated successfully" };
 };
