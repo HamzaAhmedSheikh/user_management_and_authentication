@@ -115,3 +115,9 @@ async def update_user_profile(profile_data: dict, current_user: User = Depends(g
 @user_router.get("/profile", response_model=UserRead)
 async def get_profile(current_user: User = Depends(get_current_user)):
     return current_user
+
+@user_router.get("/admin")
+async def get_admin_profile(current_user: User = Depends(get_current_user)):
+    if current_user.user_type != UserType.ADMIN:
+        raise HTTPException(status_code=403, detail="You are not authorized to access this resource")
+    return current_user

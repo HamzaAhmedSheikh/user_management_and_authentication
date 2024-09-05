@@ -7,7 +7,7 @@ from app.router.teacher import teacher_router
 from app.router.verification import verification_router
 from app.database import create_db_and_tables
 from typing import AsyncIterator
-
+from fastapi.middleware.cors import CORSMiddleware
 
 # lifespan function
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -32,6 +32,18 @@ app = FastAPI(lifespan=lifespan, title="Panaversity User Management and Authenti
             }
         ]
     ) 
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Adjust to your needs
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 prefix = "/api/v1"
 
