@@ -162,7 +162,7 @@ export const RegisterForm = () => {
                     <ReactPhoneInput
                       country={'pk'}
                       value={field.value}
-                      onChange={(phone) => field.onChange(phone)}
+                      onChange={(phone: string) => field.onChange(phone)}
                       disabled={isPending}
                       placeholder="+921234567890"
                       buttonStyle={{ backgroundColor: '#f9fafb' }}
