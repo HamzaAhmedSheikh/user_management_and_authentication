@@ -1,17 +1,31 @@
-version: "3.8"
 services:
   user-service:
     image: user-service
     build:
-      context: ./user-service
+      context: ./back-end/user-service
       dockerfile: Dockerfile.dev
     restart: always
     volumes:
-      - ./user-service:/code
+      - ./back-end/user-service:/code
     depends_on:
       - postgres_db
     ports:
       - "8000:8000"
+
+  frontend:
+    image: frontend
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front-end/src:/app/src
+      - ./front-end/public:/app/public
+    restart: always
+    depends_on:
+      - user-service
+      - postgres_db
 
   postgres_db:
     image: postgres:latest
