@@ -9,7 +9,7 @@ export const publicRoutes = [
   
   /**
    * An array of routes that are used for authentication
-   * These routes will redirect logged in users to /dashboard
+   * These routes will redirect logged in users to /admin/dashboard
    * @type {string[]}
    */
   export const authRoutes = [
@@ -29,4 +29,4 @@ export const publicRoutes = [
    * The default redirect path after logging in
    * @type {string}
    */
-  export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
+  export const DEFAULT_LOGIN_REDIRECT = "/admin/dashboard";

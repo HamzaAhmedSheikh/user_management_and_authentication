@@ -29,6 +29,13 @@ export async function auth() {
 }
 
 export async function signOut() {
-  cookies().delete("user_data");
-  console.log("[signOut] User data cookie deleted. Redirecting to login.");
+  try {
+    cookies().delete("user_data");  // Deleting the cookie
+    console.log("[signOut] User data cookie deleted. Redirecting to login.");
+
+    // Redirect to login or home page
+    window.location.href = "/login";  // You can replace "/login" with the correct path
+  } catch (error) {
+    console.error("[signOut] Error during sign out:", error);
+  }
 }

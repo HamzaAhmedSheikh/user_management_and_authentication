@@ -3,7 +3,8 @@ import NavLinks from '@/src/app/admin/ui/dashboard/nav-links';
 import PanaversityLogo from '@/src/app/admin/ui/panaversity-logo';
 // import { PowerIcon } from '@heroicons/react/24/outline';
 import { PowerIcon } from 'lucide-react';
-// import { signOut } from '@/auth';
+
+import { logout } from "@/src/actions/logout";
 
 export default function SideNav() {
   return (
@@ -18,12 +19,17 @@ export default function SideNav() {
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form
-          action={async () => {
-            'use server';
-            // await signOut();
-          }}
+          // action={async () => {
+          //   'use server';
+          //   await signOut();
+          // }}
         >
-          <button className="flex h-[48px] w-full items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-gray-100 md:justify-start md:p-2">
+          <button className="flex h-[48px] w-full items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-gray-100 md:justify-start md:p-2"
+                  onClick={async () => {
+                    'use server';
+                    await logout();  // Call logout on button click
+                  }}
+          >
             <PowerIcon className="w-6" />
             <div className="hidden md:block">Sign Out</div>
           </button>

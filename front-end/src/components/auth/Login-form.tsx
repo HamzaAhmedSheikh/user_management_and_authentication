@@ -42,7 +42,7 @@ export const LoginForm = () => {
   let callbackUrl: string | null = null
 
   if (redirect_uri) {
-    callbackUrl = `/dashboard${queryParams}`
+    callbackUrl = `/admin/dashboard${queryParams}`
   }
 
   const urlError =
