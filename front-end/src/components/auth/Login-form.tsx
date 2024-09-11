@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import { Control, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -81,7 +81,7 @@ export const LoginForm = () => {
                 <ToastAction altText="Dismiss">Dismiss</ToastAction>
                )
             })
-            form.reset();
+            form.setValue('password', '');
           }
 
           if (data?.success) {

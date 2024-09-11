@@ -19,7 +19,9 @@ export const RegisterSchema = z.object({
     password: z.string().min(6, {
         message: "Minimum 6 characters required",
     }),
-    phone: z.string().optional(),
+    phone: z.string().min(9, {
+        message: "Phone number is required",
+    }),
     affiliation: z.string().optional(),
 });
 
@@ -30,7 +32,7 @@ export const RecoverPasswordSchema = z.object({
 });
 
 export const VerifyNumberSchema = z.object({
-  phone: z.string().min(6, {
+  phone: z.string().min(9, {
       message: "Phone number is required",
   }),
 });
