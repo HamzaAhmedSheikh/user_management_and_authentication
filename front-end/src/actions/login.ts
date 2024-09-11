@@ -27,12 +27,17 @@ export const login = async (
     });
 
     if (!user || user.status !== 200) {
-        if (user.status === 401) {
+      const errorData = await user.json(); // Parse the error response body to check for specific details
+
+      if (user.status === 401) {
+        if (errorData.detail === "User with this email is not verified") {
+          return { error: "Email not verified", message: "User with this email is not verified" };
+        } else if (errorData.detail === "Incorrect email or password") {
           return { error: "Incorrect email or password", message: "Incorrect email or password" };
-        } else {
-          throw new Error("An error occurred while trying to login");
         }
       }
+      throw new Error("An error occurred while trying to login");
+    }
 
     const user_data = await user.json();
 

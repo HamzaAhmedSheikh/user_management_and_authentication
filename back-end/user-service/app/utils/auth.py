@@ -36,8 +36,18 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 def authenticate_user(session: Session, email: str, password: str):
     user = session.exec(select(User).where(User.email == email)).first()
-    if not user or not user.is_verified or not verify_password(password, user.password):
-        return False
+    if not user or not verify_password(password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    if not user or not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User with this email is not verified",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return user
 
 
