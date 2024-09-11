@@ -9,6 +9,7 @@ from app.database import create_db_and_tables
 from typing import AsyncIterator
 from fastapi.middleware.cors import CORSMiddleware
 
+
 # lifespan function
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     try:
@@ -23,11 +24,11 @@ app = FastAPI(lifespan=lifespan, title="Panaversity User Management and Authenti
     version="0.0.1",
     servers=[
             {
-                "url": "http://localhost:8000/", # ADD NGROK URL Here Before Creating GPT Action
+                "url": "http://localhost:8000", # ADD NGROK URL Here Before Creating GPT Action
                 "description": "Development Server"
             },
             {
-                "url": "https://4642-103-82-123-115.ngrok-free.app",
+                "url": "https://localhost:8000",
                 "description": "Production Server"
             }
         ]
