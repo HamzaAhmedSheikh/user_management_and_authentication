@@ -23,6 +23,8 @@ services:
       - ./front-end/src:/app/src
       - ./front-end/public:/app/public
     restart: always
+    env_file:
+      - ./front-end/.env.local
     depends_on:
       - user-service
       - postgres_db
