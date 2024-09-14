@@ -68,17 +68,9 @@ async def login_for_access_token(
 #resend link
 @user_router.post("/resend-link")
 async def resend_verification_link(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
-    user = authenticate_user(session, form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
     if user.is_verified:
         raise HTTPException(status_code=400, detail="User is already verified")
 

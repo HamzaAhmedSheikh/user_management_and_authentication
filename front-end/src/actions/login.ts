@@ -3,6 +3,7 @@
 import * as z from "zod";
 import { cookies } from "next/headers";
 import { LoginSchema } from "@/src/schemas/userschema";
+import { checkUserVerification } from "./profile";
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
@@ -58,7 +59,8 @@ export const login = async (
       httpOnly: true,
     });
 
-    return { success: "Authenticated!", message: `Welcome` };
+    const verificationStatus = await checkUserVerification();
+    return { success: "Authenticated!", message: `Welcome`, redirectTo: verificationStatus.redirectTo };
   } catch (error) {
     if (error instanceof Error) {
           return { error: "Invalid credentials!", message: error.message };

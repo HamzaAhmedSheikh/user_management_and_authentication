@@ -94,9 +94,13 @@ export const LoginForm = () => {
                <ToastAction altText="Close">Close</ToastAction>
               ),
             })
-            router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT );
+            if (data.redirectTo) {
+              router.push(data.redirectTo)
+            } else {
+              router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT)
+            }
           }
-        })
+        });
     });
   };
 

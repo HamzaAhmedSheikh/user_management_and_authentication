@@ -42,12 +42,6 @@ def authenticate_user(session: Session, email: str, password: str):
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if not user or not user.is_verified:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User with this email is not verified",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
     return user
 
 

@@ -57,7 +57,7 @@ async def create_and_send_magic_link(user, phone: str, session: Session = Depend
     session.commit()
 
     # Generate the verification URL
-    url = f"http://localhost:8000/api/v1/user/verify?token={hash_id}"
+    url = f"http://localhost:3000/verification?token={hash_id}"
     
     # Message to be sent
     sms_message = f"Click the link to verify your phone number:\n {url} \n\nThe link expires in 15 minutes."
