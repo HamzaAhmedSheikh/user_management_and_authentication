@@ -19,13 +19,18 @@ export const resendVerification = async () => {
             cache: "no-store",
         });
         if (response.ok) {
-            return true; // Verification success
-        } else {
-            console.log('Verification failed', response.statusText);
-            return false; // Verification failed
+            return { success: true }; // Verification success
+        } else if (response.status === 401) {
+            return { success: false, error: "Unauthorized", redirectTo: "/login", action: "Please Login" };
+        } else if (response.status === 400) {
+            return { success: false, error: "User is already verified", redirectTo: "/dashboard", action: "Go to Dashboard" };
+        } 
+        else {
+            return { success: false, error: "Error during verification", redirectTo: "/login", action: "Please Login" };
         }
     } catch (error) {
         console.log('Error during verification:', error);
-        return false; // In case of any error
+        return { success: false, error: "Error during verification", redirectTo: "/login", action: "Please Login" };
     }
+    return { success: "Email Sent" };
 }

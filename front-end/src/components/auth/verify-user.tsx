@@ -6,13 +6,15 @@ import { Button } from "@/src/components/ui/button";
 import { verify } from "@/src/actions/verify";
 import { resendVerification } from "@/src/actions/resend-verification";
 import { useToast } from "@/src/components/ui/use-toast"
+import Link from 'next/link';
+import { ToastAction } from '../ui/toast';
 
 const Verify = () => {
   const { toast } = useToast()
   const searchParams = useSearchParams();
   const [verified, setVerified] = useState<null | boolean>(null); // Store verification status (null initially)
   const token = searchParams.get('token');
-  console.log('token', token);
+
   useEffect(() => {
     if (token) {
       // Only call verify if token is present
@@ -75,20 +77,6 @@ const Verify = () => {
             </div>
             <h2 className="text-2xl font-bold">Email Verification Failed</h2>
             <p className="px-5">Invalid or expired verification link</p>
-            <Button
-              size="sm"
-              variant="link"
-              className="w-full"
-              onClick={() => {
-                resendVerification();
-                toast({
-                  title: "Verification Link Sent",
-                  description: "Please check your Whatsapp for the verification link",
-                })
-              }}
-            >
-                Resend Verification Link
-            </Button>
         </div>
       )}
     </div>

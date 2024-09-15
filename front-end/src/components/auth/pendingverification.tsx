@@ -2,17 +2,33 @@
 import { resendVerification } from '@/src/actions/resend-verification';
 import { Button } from '../ui/button';
 import { useToast } from '../ui/use-toast';
+import Link from 'next/link';
+import { ToastAction } from '../ui/toast';
 
 const EmailVerificationPending = () => {
     const { toast } = useToast()
   const resendEmail = () => {
-    // Logic to resend the email
-    resendVerification();
-    toast({
-        title: "Email sent",
-        description: "Email has been sent successfully",
-    })
-  };
+    resendVerification().then((res) => {
+      if (res?.error) {
+        toast({
+          title: "Error",
+          description: res.error,
+          variant: "destructive",
+          action: (
+            <Link href={res.redirectTo}> 
+              <ToastAction altText={res.action}>{res.action}</ToastAction>
+            </Link>
+          ),
+        });
+      }
+      if (res?.success) {
+        toast({
+          title: "Email Sent",
+          description: "Email has been sent to your inbox",
+        });
+      }
+      })
+    }
 
   return (
     <div className="flex items-center justify-center h-screen ">
