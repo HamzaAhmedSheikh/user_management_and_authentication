@@ -1,4 +1,4 @@
-#settings.py
+# settings.py
 from starlette.config import Config
 
 try:
@@ -12,7 +12,6 @@ ALGORITHM = config("ALGORITHM", cast=str, default="HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = config(
     "ACCESS_TOKEN_EXPIRE_MINUTES", cast=int, default=30)
 WHATSAPP_API_KEY = config("WHATSAPP_API_KEY", cast=str)
-WHATSAPP_API_URL = config("WHATSAPP_API_URL", cast=str)
 
 # OAuth Configuration
 OAUTH_CLIENT_ID = config("OAUTH_CLIENT_ID", cast=str)

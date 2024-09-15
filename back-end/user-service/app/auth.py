@@ -5,14 +5,13 @@ from passlib.context import CryptContext
 from sqlmodel import Session, select
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from app.models.user import User
-from app.database import get_session
+from app.models import User
+from app.db_engine import get_session
 from app.settings import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from app.services.whatsapp_message import send_whatsapp_message
-import hashlib
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/user/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/user/user/login")
+
 
 
 def verify_password(plain_password, hashed_password):
@@ -37,11 +36,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 def authenticate_user(session: Session, email: str, password: str):
     user = session.exec(select(User).where(User.email == email)).first()
     if not user or not verify_password(password, user.password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return False
     return user
 
 
