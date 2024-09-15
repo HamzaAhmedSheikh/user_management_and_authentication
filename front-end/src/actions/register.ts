@@ -29,19 +29,16 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
       }),
       cache: "no-store",
     });
-
-    console.log('signup_request', signup_request.status, signup_request.statusText);
+    
+    if (!signup_request || signup_request.status !== 200) {
+      if (signup_request.status === 409) {
+        return { error: "User with these credentials already exists" };
+      }
+      throw new Error("An error occurred while trying to register user");
+    }
   } catch (error) {
     console.error('Fetch error:', error);
     return { error: "Failed to register user!" };
   }
-
-  // console.log('signup_request', signup_request.status, signup_request.statusText);
-
-  // if (signup_request.status !== 200) {
-  //   const error = await signup_request.json();
-  //   return { error: error.detail };
-  // }
-
   return { success: "Signup Success - Please Login!" };
 };

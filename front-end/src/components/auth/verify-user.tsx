@@ -24,7 +24,28 @@ const Verify = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      {verified === null && <p>Verifying...</p>}
+      {verified === null && (
+        <div className="flex flex-col justify-center gap-y-5 items-center w-[400px] px-5 shadow-md h-[400px]">
+          <div className="flex justify-center mb-4">
+            <div className="bg-yellow-100 p-4 rounded-full">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 text-yellow-600 animate-spin"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v4a1 1 0 001 1h4a1 1 0 100-2h-3V5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold">Verifying...</h2>
+          <p>Please wait while we verify your email.</p>
+        </div>
+      )}
       {verified === true && (
         <div className="flex flex-col justify-center gap-y-5 items-center w-[400px] px-5 shadow-md h-[400px]">
             <div className="flex justify-center mb-4">
