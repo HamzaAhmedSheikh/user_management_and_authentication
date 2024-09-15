@@ -1,5 +1,6 @@
 "use server";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function auth() {
   // Check if cookies exist
@@ -28,14 +29,35 @@ export async function auth() {
   return user_data;
 }
 
-export async function signOut() {
-  try {
-    cookies().delete("user_data");  // Deleting the cookie
-    console.log("[signOut] User data cookie deleted. Redirecting to login.");
-
-    // Redirect to login or home page
-    window.location.href = "/login";  // You can replace "/login" with the correct path
-  } catch (error) {
-    console.error("[signOut] Error during sign out:", error);
+export async function adminAuth() {
+  const session = await auth();
+  if (!session) {
+    console.log("[session] No cookies. Redirecting...");
+    redirect("/login");
   }
+  const token = session.access_token;
+  try {
+    const response = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/user/admin`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return { message: "Network issue", redirectTo: "/login" };
+  }
+}
+
+export async function signOut() {
+  cookies().delete("user_data");  // Deleting the cookie
+  console.log("[signOut] User data cookie deleted. Redirecting to login.");
+
+  // Redirect to login or home page
+  redirect("/login");  // You can replace "/login" with the correct path
 }

@@ -10,7 +10,7 @@ export const resendVerification = async () => {
     }
     const token = session.access_token;
     try {
-        const response = await fetch(`http://localhost:8000/api/v1/user/resend-link`, {  // Fixed URL
+        const response = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/user/resend-link`, {  // Fixed URL
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

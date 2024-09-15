@@ -2,7 +2,7 @@
 
 export const verify = async (token: string) => {
     try {
-    const response = await fetch(`http:localhost:8000/api/v1/user/verify?token=${token}`
+    const response = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/user/verify?token=${token}`
         , {
             method: "GET",
             headers: {
