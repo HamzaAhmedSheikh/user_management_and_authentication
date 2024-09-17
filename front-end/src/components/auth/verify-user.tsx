@@ -68,6 +68,17 @@ const Verify = () => {
             </div>
             <h2 className="text-2xl font-bold">Email Verified</h2>
             <p>Your email was verified. You can continue using the application.</p>
+
+            <Link href="/dashboard">
+              <Button 
+                size="sm"
+                variant="link"
+                asChild
+                className="w-full"
+                >
+                  Go to Dashboard
+              </Button>
+            </Link>
         </div>
       )}
       {verified === false && (

@@ -4,7 +4,7 @@ import { adminAuth, auth } from "./auth";
 
 export async function middleware(req: NextRequest) {
   // Define protected routes
-  const protectedRoutes = ["/auth/verification"];
+  const protectedRoutes = ["/auth/verification", "/dashboard"];
   const adminProtectedRoutes = ["/admin/dashboard"];
 
   // Check if the current route is protected

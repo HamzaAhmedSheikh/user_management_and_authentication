@@ -34,7 +34,7 @@ def send_whatsapp_message(number: str, message: str):
     except requests.exceptions.RequestException as e:
         print(f"Error Sending WhatsApp Message: {e}")
         raise HTTPException(
-            status_code=500, detail="Enter a phone number registered with WhatsApp"
+            status_code=410, detail="Enter a phone number registered with WhatsApp"
         )
 
 

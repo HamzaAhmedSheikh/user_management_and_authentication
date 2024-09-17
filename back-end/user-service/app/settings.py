@@ -21,3 +21,10 @@ OAUTH_REDIRECT_URI = config("OAUTH_REDIRECT_URI", cast=str)
 OAUTH_SCOPE = config("OAUTH_SCOPE", cast=str)
 OAUTH_AUTH_URL = config("OAUTH_AUTH_URL", cast=str)
 OAUTH_TOKEN_URL = config("OAUTH_TOKEN_URL", cast=str)
+
+# SMTP Configuration
+SMTP_SERVER = config("SMTP_SERVER", cast=str)
+SMTP_PORT = config("SMTP_PORT", cast=int)
+SMTP_USER = config("SMTP_USER", cast=str)
+SMTP_PASSWORD = config("SMTP_PASSWORD", cast=str)
+SMTP_SENDER = config("SMTP_SENDER", cast=str)

@@ -72,12 +72,8 @@ async def resend_verification_link(
         raise HTTPException(status_code=400, detail="User is already verified")
 
     # Use the helper function to create and send the magic link
-    whatsapp_response = await create_and_send_magic_link(user, user.phone,session)
-    if whatsapp_response["status"] != "success":
-        raise HTTPException(
-            status_code=500, detail="Failed to send WhatsApp message")
-
-    return {"msg": "Verification link resent successfully"}
+    await create_and_send_magic_link(user, user.phone,session)
+    return {"message": "Verification link resent successfully"}
 
 # logout 
 @user_router.post("/logout", response_model=MessageResponse)

@@ -12,7 +12,7 @@ class VerificationTokenType(str, Enum):
 class VerificationToken(SQLModel, table=True):
     __tablename__ = "verification_token"
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
-    user_id: str = Field(foreign_key="user.id")
+    user_id: str 
     hash_id: str = Field(default_factory=lambda: uuid4().hex)
     token_value: str
     token_type: VerificationTokenType = Field(default=VerificationTokenType.EMAIL_VERIFICATION)

@@ -33,10 +33,10 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     if (!signup_request || signup_request.status !== 200) {
       if (signup_request.status === 409) {
         return { error: "User with these credentials already exists" };
-      } else if (signup_request.status === 500) {
-        return { error: "Enter a phone number registered on whatsapp" };
+      } else if (signup_request.status === 410) {
+          return { error: "Enter a phone number registered with WhatsApp" };
       }
-      throw new Error("An error occurred while trying to register user");
+      return {error: "An error occurred while registering user!"};
     }
   } catch (error) {
     console.error('Fetch error:', error);
