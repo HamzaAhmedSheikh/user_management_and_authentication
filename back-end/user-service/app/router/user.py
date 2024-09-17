@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Optional, Annotated
 from fastapi import APIRouter, Depends, HTTPException, status, Request
-from app.models.user import User, UserCreate, UserType, UserRead, UserLogin
+from app.models.user import User, UserCreate, UserType, UserRead, UserUpdate, UserLogin
 from app.models.auth_token import AuthToken
 from app.models.teacher import Teacher
+from app.schemas.user import LoginRequest, TokenResponse, MessageResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 from app.utils.auth import hash_password, get_current_user, authenticate_user, create_access_token
@@ -56,17 +57,18 @@ async def register_user(new_user: UserCreate, session: Session = Depends(get_ses
     return user
 
 
-@user_router.post("/login")
+@user_router.post("/login", response_model=TokenResponse)
 async def login_for_access_token(
-    form_data: UserLogin,
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends(OAuth2PasswordRequestForm)],
     session: Session = Depends(get_session)
 ):
-    user = authenticate_user(session, form_data.email, form_data.password)
+    # username is an email here
+    user = authenticate_user(session, form_data.username, form_data.password)
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
 #resend link
-@user_router.post("/resend-link")
+@user_router.post("/resend-link", response_model=MessageResponse)
 async def resend_verification_link(
     user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
@@ -83,26 +85,27 @@ async def resend_verification_link(
     return {"msg": "Verification link resent successfully"}
 
 # logout 
-@user_router.post("/logout")
+@user_router.post("/logout", response_model=MessageResponse)
 async def logout_user(access_token: str, refresh_token: Optional[str] = None):
-    return {"status": "success", "message": "Logout successful. The token has been invalidated."}
+    return {"message": "Logout successful. The token has been invalidated."}
 
 
 # profile section
-@user_router.patch("/profile")
-async def update_user_profile(profile_data: dict, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
-    for key, value in profile_data.items():
+@user_router.patch("/profile", response_model=MessageResponse)
+async def update_user_profile(profile_data: UserUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+    updates = profile_data.dict(exclude_unset=True)  # Exclude unset fields
+    for key, value in updates.items():
         setattr(current_user, key, value)
     session.add(current_user)
     session.commit()
-    return {"status": "success", "message": "Profile updated successfully."}
+    return {"message": "Profile updated successfully."}
 
 
 @user_router.get("/profile", response_model=UserRead)
 async def get_profile(current_user: User = Depends(get_current_user)):
     return current_user
 
-@user_router.get("/admin")
+@user_router.get("/admin", response_model=UserRead)
 async def get_admin_profile(current_user: User = Depends(get_current_user)):
     if current_user.user_type != UserType.ADMIN:
         raise HTTPException(status_code=403, detail="You are not authorized to access this resource")

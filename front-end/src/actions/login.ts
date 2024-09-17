@@ -14,57 +14,57 @@ export const login = async (
     return { error: "Invalid fields!" };
   }
 
-  const { email, password } = validatedFields.data;
+  const { username, password } = validatedFields.data;
 
   try {
+    const formData = new URLSearchParams();
+    formData.append("username", username);
+    formData.append("password", password);
 
-    const user = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/user/login`, {
+    const response = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/user/login`, {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: formData,
       cache: "no-store",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/x-www-form-urlencoded"
       },
     });
 
-    if (!user || user.status !== 200) {
-      const errorData = await user.json(); // Parse the error response body to check for specific details
+    if (!response.ok) {
+      const errorData = await response.json();
 
-      if (user.status === 401) {
+      if (response.status === 401) {
         if (errorData.detail === "User with this email is not verified") {
           return { error: "Email not verified", message: "User with this email is not verified" };
         } else if (errorData.detail === "Incorrect email or password") {
           return { error: "Incorrect email or password", message: "Incorrect email or password" };
         }
       }
-      throw new Error("An error occurred while trying to login");
+      throw new Error(errorData.message || "An error occurred during login");
     }
 
-    const user_data = await user.json();
-
+    const userData = await response.json();
+    
     // Include the token expiration time in seconds and milliseconds
-    const expiresInSeconds = user_data.expires_in; // Replace with the actual key in your response
-    const expiresInMilliseconds = expiresInSeconds * 1000;
+    const expiresInMilliseconds = userData.expires_in * 1000;
 
-    const updated_user_data: UserData = {
-      ...user_data,
+    const updatedUserData = {
+      ...userData,
       accessTokenExpires: Date.now() + expiresInMilliseconds,
     };
 
-    console.log("Login Request Response To Set in Cookies");
-  
     cookies().set({
       name: "user_data",
-      value: JSON.stringify(updated_user_data), // Convert object to a string
+      value: JSON.stringify(updatedUserData),
       httpOnly: true,
     });
 
     const verificationStatus = await checkUserVerification();
-    return { success: "Authenticated!", message: `Welcome`, redirectTo: verificationStatus.redirectTo };
+    return { success: "Authenticated!", message: "Welcome!", redirectTo: verificationStatus.redirectTo };
   } catch (error) {
     if (error instanceof Error) {
-          return { error: "Invalid credentials!", message: error.message };
-      }
-      return { error: "Invalid credentials!", message: "Invalid credentials!" };
+      return { error: "Login failed!", message: error.message };
     }
-}
+    return { error: "Login failed!", message: "An unexpected error occurred" };
+  }
+};

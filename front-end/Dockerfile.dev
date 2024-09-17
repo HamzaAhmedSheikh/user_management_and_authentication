@@ -2,11 +2,19 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Install dependencies
 COPY package*.json /app/
-
 RUN npm install
 
+# Install `next` globally
+RUN npm install -g next
+
+# Copy the rest of the application code
 COPY . /app
+
+# Add a non-root user
+RUN addgroup -S myuser && adduser -S myuser -G myuser
+USER myuser
 
 EXPOSE 3000
 

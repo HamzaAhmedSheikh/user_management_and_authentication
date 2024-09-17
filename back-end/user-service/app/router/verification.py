@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from app.models.user import User, UserCreate, UserType, UserRead
 from app.models.auth_token import AuthToken
 from app.models.teacher import Teacher
+from app.schemas.user import MessageResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 from app.utils.auth import hash_password, get_current_user, authenticate_user, create_access_token
@@ -16,7 +17,7 @@ from app.models.verification_token import VerificationToken, VerificationTokenTy
 verification_router = APIRouter()
 
 
-@verification_router.get("/verify")
+@verification_router.get("/verify", response_model=MessageResponse)
 async def verify_user(token: str, request: Request, session: Session = Depends(get_session)):
     # Find the verification token by hash
     verification_token = session.exec(
@@ -45,7 +46,7 @@ async def verify_user(token: str, request: Request, session: Session = Depends(g
 
     # Check if the user is already verified
     if user.is_verified:
-        return {"msg": "User is already verified"}
+        return {"message": "User is already verified"}
 
     # Verify the user
     user.is_verified = True
@@ -57,4 +58,4 @@ async def verify_user(token: str, request: Request, session: Session = Depends(g
     session.add(verification_token)
     session.commit()
 
-    return {"msg": "User verified successfully"}
+    return {"message": "User verified successfully"}
