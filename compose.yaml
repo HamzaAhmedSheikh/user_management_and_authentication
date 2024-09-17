@@ -35,7 +35,7 @@ services:
     environment:
       - POSTGRES_USER=hamzaahmedsheikh313
       - POSTGRES_PASSWORD=neondb
-      - POSTGRES_DB=afLBpPjT2Il1
+      - POSTGRES_DB=53mZXNDOHkto
     ports:
       - "5433:5432"
     volumes:
