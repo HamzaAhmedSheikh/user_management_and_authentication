@@ -36,22 +36,17 @@ async def register_user(new_user: UserCreate, session: Session = Depends(get_ses
         user_type=new_user.user_type
     )
 
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-
     if new_user.user_type == UserType.TEACHER:
         teacher = Teacher(user_id=user.id, department="Unassigned")
         session.add(teacher)
         session.commit()
 
-    if new_user.phone:
-        # Use the helper function to create and send the magic link
-        whatsapp_response = await create_and_send_magic_link(user, new_user.phone, session)
-        
-        if whatsapp_response["status"] != "success":
-            raise HTTPException(
-                status_code=500, detail="User registered but failed to send WhatsApp message")
+    # Use the helper function to create and send the magic link
+    await create_and_send_magic_link(user, new_user.phone, session)
+    
+    session.add(user)
+    session.commit()
+    session.refresh(user)
 
     return user
 

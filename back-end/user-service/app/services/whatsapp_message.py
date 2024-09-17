@@ -1,6 +1,6 @@
 from pydantic import ValidationError
 import re
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from app.database import get_session
 from sqlmodel import Session
 from datetime import datetime, timedelta
@@ -33,10 +33,11 @@ def send_whatsapp_message(number: str, message: str):
         return {"status": "success", "detail": "Message sent successfully"}
     except requests.exceptions.RequestException as e:
         print(f"Error Sending WhatsApp Message: {e}")
-        return {"status": "error", "detail": f"Failed to send message: {e}"}
+        raise HTTPException(
+            status_code=500, detail="Enter a phone number registered with WhatsApp"
+        )
 
 
-# Updated function to create and send the magic link
 async def create_and_send_magic_link(user, phone: str, session: Session = Depends(get_session)):
     expire = datetime.utcnow() + timedelta(minutes=15)
     token_data = {"sub": user.email, "phone": user.phone, "exp": expire}
@@ -45,7 +46,16 @@ async def create_and_send_magic_link(user, phone: str, session: Session = Depend
     # Generate a hash of the token
     hash_id = generate_hash_id(token)
 
-    # Store the hash in the VerificationToken table
+    # Generate the verification URL
+    url = f"http://localhost:3000/verification?token={hash_id}"
+    
+    # Message to be sent
+    sms_message = f"Click the link to verify your phone number:\n {url} \n\nThe link expires in 15 minutes."
+    
+    # Send the WhatsApp message
+    send_whatsapp_message(phone, sms_message)
+
+    # Store the hash in the VerificationToken table only if the message was sent successfully
     verification_token = VerificationToken(
         user_id=user.id,
         hash_id=hash_id,
@@ -56,12 +66,4 @@ async def create_and_send_magic_link(user, phone: str, session: Session = Depend
     session.add(verification_token)
     session.commit()
 
-    # Generate the verification URL
-    url = f"http://localhost:3000/verification?token={hash_id}"
-    
-    # Message to be sent
-    sms_message = f"Click the link to verify your phone number:\n {url} \n\nThe link expires in 15 minutes."
-    
-    # Send the WhatsApp message
-    whatsapp_response = send_whatsapp_message(phone, sms_message)
-    return whatsapp_response
+    return {"status": "success", "detail": "Verification link sent successfully"}

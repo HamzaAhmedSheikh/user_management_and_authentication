@@ -71,7 +71,7 @@ export const RegisterForm = () => {
         setError(data.error);
         setSuccess(data.success);
         if (data?.error) {
-          form.reset();
+          // form.reset();
           toast({
             title: "Signup Failed",
             description: data?.error,
