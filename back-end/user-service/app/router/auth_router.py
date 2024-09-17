@@ -6,10 +6,11 @@ from app.models.user import User
 from sqlmodel import Session, select
 from app.database import get_session
 from app.services.whatsapp_message import send_whatsapp_message
+from app.schemas.user import MessageResponse
 
 auth_router = APIRouter()
 
-@auth_router.post("/request-otp")
+@auth_router.post("/request-otp", response_model=MessageResponse)
 async def request_otp(phone: str, session: Session = Depends(get_session)):
     user = session.exec(select(User).where(User.phone == phone)).first()
     if not user:
@@ -22,9 +23,9 @@ async def request_otp(phone: str, session: Session = Depends(get_session)):
 
     send_whatsapp_message(phone, f"Your OTP is {otp}") 
 
-    return {"status": "success", "message": "OTP sent successfully"}
+    return {"message": "OTP sent successfully"}
 
-@auth_router.post("/verify-otp-update-password")
+@auth_router.post("/verify-otp-update-password", response_model=MessageResponse)
 async def verify_otp_and_update_password(phone: str, otp: str, new_password: str, session: Session = Depends(get_session)):
     user = session.exec(select(User).where(User.phone == phone)).first()
     if not user:
@@ -38,4 +39,4 @@ async def verify_otp_and_update_password(phone: str, otp: str, new_password: str
     session.add(user)
     session.commit()
 
-    return {"status": "success", "message": "Password updated successfully"}
+    return {"message": "Password updated successfully"}

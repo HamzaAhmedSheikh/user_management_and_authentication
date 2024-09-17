@@ -63,13 +63,13 @@ class UserCreate(UserBase):
 class UserRead(UserBase):
     id: str
     is_verified: bool
-
+    
 
 class UserUpdate(SQLModel):  # Making all fields optional for partial updates
     full_name: Optional[str] = None
-    phone: Optional[str] = None
+    # phone: Optional[str] = None
     affiliation: Optional[str] = None
-    is_verified: Optional[bool] = None
-    otp: Optional[str] = None
-    consumer_id: Optional[str] = None
-    issuer: Optional[str] = None
+    # is_verified: Optional[bool] = None
+    # otp: Optional[str] = None
+    # consumer_id: Optional[str] = None
+    # issuer: Optional[str] = None
