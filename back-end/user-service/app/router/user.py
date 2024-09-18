@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from app.settings import SECRET_KEY, ALGORITHM
 from app.models.verification_token import VerificationToken, VerificationTokenType
-from app.services.email_message import send_user_signup_email
+from app.services.email_message import send_user_signup_email, send_user_magic_link_email
 
 user_router = APIRouter()
 
@@ -74,7 +74,7 @@ async def resend_verification_link(
         raise HTTPException(status_code=400, detail="User is already verified")
 
     # Use the helper function to create and send the magic link
-    await create_and_send_magic_link(user, user.phone,session)
+    await create_and_send_magic_link(user, user.phone, session)
     return {"message": "Verification link resent successfully"}
 
 # logout 

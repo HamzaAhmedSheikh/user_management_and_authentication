@@ -7,12 +7,13 @@ from sqlmodel import Session, select
 from app.database import get_session
 from app.services.whatsapp_message import send_whatsapp_message
 from app.schemas.user import MessageResponse
+from app.services.email_message import send_otp_email
 
 auth_router = APIRouter()
 
 @auth_router.post("/request-otp", response_model=MessageResponse)
 async def request_otp(phone: str, session: Session = Depends(get_session)):
-    user = session.exec(select(User).where(User.phone == phone)).first()
+    user: User = session.exec(select(User).where(User.phone == phone)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found with this phone number")
 
@@ -22,6 +23,7 @@ async def request_otp(phone: str, session: Session = Depends(get_session)):
     session.commit()
 
     send_whatsapp_message(phone, f"Your OTP is {otp}") 
+    send_otp_email(user.email, otp)
 
     return {"message": "OTP sent successfully"}
 

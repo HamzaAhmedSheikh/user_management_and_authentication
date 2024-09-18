@@ -10,6 +10,8 @@ from app.models.verification_token import VerificationToken, VerificationTokenTy
 import hashlib
 import requests
 from app.settings import WHATSAPP_API_KEY, WHATSAPP_API_URL
+from app.models.user import User
+from app.services.email_message import send_user_magic_link_email
 
 # Hash generator
 def generate_hash_id(data: str, length=8):
@@ -38,7 +40,7 @@ def send_whatsapp_message(number: str, message: str):
         )
 
 
-async def create_and_send_magic_link(user, phone: str, session: Session = Depends(get_session)):
+async def create_and_send_magic_link(user: User, phone: str, session: Session = Depends(get_session)):
     expire = datetime.utcnow() + timedelta(minutes=15)
     token_data = {"sub": user.email, "phone": user.phone, "exp": expire}
     token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
@@ -54,7 +56,8 @@ async def create_and_send_magic_link(user, phone: str, session: Session = Depend
     
     # Send the WhatsApp message
     send_whatsapp_message(phone, sms_message)
-
+    send_user_magic_link_email(user.email, user.full_name, url)
+    
     # Store the hash in the VerificationToken table only if the message was sent successfully
     verification_token = VerificationToken(
         user_id=user.id,

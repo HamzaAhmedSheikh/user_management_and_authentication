@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from app.settings import SECRET_KEY, ALGORITHM
 from app.models.verification_token import VerificationToken, VerificationTokenType
+from app.services.email_message import send_user_verifies_success_email
 
 verification_router = APIRouter()
 
@@ -40,7 +41,7 @@ async def verify_user(token: str, request: Request, session: Session = Depends(g
         raise HTTPException(status_code=400, detail="Invalid token")
 
     # Find the user associated with this verification token
-    user = session.exec(select(User).where(User.id == verification_token.user_id)).first()
+    user: User = session.exec(select(User).where(User.id == verification_token.user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -52,10 +53,11 @@ async def verify_user(token: str, request: Request, session: Session = Depends(g
     user.is_verified = True
     session.add(user)
     session.commit()
-
+    session.refresh(user)
+    send_user_verifies_success_email(user.email, user.full_name)
     # Mark the token as used
     verification_token.used_at = datetime.utcnow()
     session.add(verification_token)
     session.commit()
-
+    session.refresh(verification_token)
     return {"message": "User verified successfully"}
