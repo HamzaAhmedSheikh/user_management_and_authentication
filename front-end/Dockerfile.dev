@@ -1,21 +1,23 @@
 FROM node:18-alpine
 
-WORKDIR /app
+LABEL maintainer="muzammil-irfan"
 
-# Install dependencies
-COPY package*.json /app/
-RUN npm install
+WORKDIR /code/
 
-# Install `next` globally
+# Install Next.js Globally
 RUN npm install -g next
 
+# Copy package files first to leverage caching
+COPY package*.json ./
+
+# Install dependencies (including Next.js locally)
+RUN npm install
+
 # Copy the rest of the application code
-COPY . /app
+COPY . .
 
-# Add a non-root user
-RUN addgroup -S myuser && adduser -S myuser -G myuser
-USER myuser
-
+# Expose the application port
 EXPOSE 3000
 
+# Start the application
 CMD ["npm", "run", "dev"]

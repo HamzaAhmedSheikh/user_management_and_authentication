@@ -39,12 +39,17 @@ Make sure you have the following installed on your machine:
 
 2. **Set Up Environment Variables**
    - **Frontend**:
-     - Navigate to the `front-end` folder.
-     - Create a `.env.local` file by copying and pasting the contents of `.env.example`, make sure to place `.env.local` inside front-end folder, same as where `.env.example` is located
-   
+       1. Navigate to the `front-end` folder.
+       2. Create a `.env.local` file by:
+          - Copying the contents of `.env.example`.
+          - Ensuring that `.env.local` is placed inside the `front-end` folder, in the same location as `.env.example`.
+
    - **Backend**:
-     - Navigate to the `back-end/user-service` folder.
-     - Download the `.env` file from the Google Drive link provided in your group description (Group name: "Panaversity Working KHI") and place it in the `back-end/user-service` directory.
+       1. Navigate to the `back-end/user-service` folder.
+       2. Download the `.env` file from the Google Drive link provided in your group description (Group name: "Panaversity Working KHI") and place it in the `back-end/user-service` directory.
+       3. Rename the file:
+          - If the filename appears as `env`, rename it to `.env` after downloading, as it might download without the leading dot.
+
 
 3. **Build and Run Docker Containers**
    From the root project directory, run:

@@ -20,7 +20,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./front-end:/app
+      - ./front-end:/code
     restart: always
     env_file:
       - ./front-end/.env.local
