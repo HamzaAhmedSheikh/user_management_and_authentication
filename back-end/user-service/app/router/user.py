@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from app.settings import SECRET_KEY, ALGORITHM
 from app.models.verification_token import VerificationToken, VerificationTokenType
+from app.services.email_message import send_user_signup_email
 
 user_router = APIRouter()
 
@@ -44,6 +45,7 @@ async def register_user(new_user: UserCreate, session: Session = Depends(get_ses
 
     # Use the helper function to create and send the magic link
     await create_and_send_magic_link(user, new_user.phone, session)
+    send_user_signup_email(user.email, user.full_name)
     
     session.add(user)
     session.commit()
