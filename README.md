@@ -57,17 +57,23 @@ Make sure you have the following installed on your machine:
    docker-compose up -d --build
    ```
 
-4. **Access the Application**
+4. **Frontend Installation**
+   - Navigate to `front-end` folder
+   - Open terminal and run: 
+      ```
+      npm install
+      ```
+      This command will install all the necessary packages.
+   - After the installation is complete, run:
+      ```
+      npm run dev
+      ```
+      This will start the development server.
+
+
+5. **Access the Application**
    - **Frontend**: Open your browser and navigate to `http://localhost:3000` 
    - **Backend**: For API access, go to `http://localhost:8000`
-
-
-5. **Handling Frontend Errors**
-   If you encounter missing `node_modules` errors when accessing the frontend:
-   - The issue arises because the frontend dependencies are installed after the Docker command `CMD ['npm','run','dev']` runs.
-   - To resolve this:
-     - Check the logs of the frontend service to monitor the installation progress. Look for messages indicating that the packages are installed or that the application is "Ready."
-     - If you see errors upon visiting `http://localhost:3000`, simply restart the frontend container. Make sure to wait until the logs indicate that the installation is complete before restarting, as interrupting the process could cause additional issues.
 
 
 6. **Updating Code**

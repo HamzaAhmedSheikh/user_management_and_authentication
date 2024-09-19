@@ -7,43 +7,9 @@ services:
     restart: always
     volumes:
       - ./back-end/user-service:/code
-    depends_on:
-      - postgres_db
     ports:
       - "8000:8000"
 
-  frontend:
-    image: frontend
-    build:
-      context: ./front-end
-      dockerfile: Dockerfile.dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./front-end:/code
-    restart: always
-    env_file:
-      - ./front-end/.env.local
-    depends_on:
-      - user-service
-      - postgres_db
-
-  postgres_db:
-    image: postgres:latest
-    restart: always
-    container_name: PostgresCont
-    environment:
-      - POSTGRES_USER=hamzaahmedsheikh313
-      - POSTGRES_PASSWORD=neondb
-      - POSTGRES_DB=53mZXNDOHkto
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_db:/var/lib/postgresql/data
-
-volumes:
-  postgres_db:
-    driver: local
 networks:
   default:
     driver: bridge
