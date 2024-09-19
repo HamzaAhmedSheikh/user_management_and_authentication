@@ -170,7 +170,7 @@ export const LoginForm = () => {
             asChild
             className="w-full"
           >
-            <Link href="/register">Don't have an account? Register</Link>
+            <Link href="/register">Don&apos;t have an account? Register</Link>
           </Button>
         </form>
       </Form>

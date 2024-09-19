@@ -61,7 +61,16 @@ Make sure you have the following installed on your machine:
    - **Frontend**: Open your browser and navigate to `http://localhost:3000` 
    - **Backend**: For API access, go to `http://localhost:8000`
 
-5. **Updating Code**
+
+5. **Handling Frontend Errors**
+   If you encounter missing `node_modules` errors when accessing the frontend:
+   - The issue arises because the frontend dependencies are installed after the Docker command `CMD ['npm','run','dev']` runs.
+   - To resolve this:
+     - Check the logs of the frontend service to monitor the installation progress. Look for messages indicating that the packages are installed or that the application is "Ready."
+     - If you see errors upon visiting `http://localhost:3000`, simply restart the frontend container. Make sure to wait until the logs indicate that the installation is complete before restarting, as interrupting the process could cause additional issues.
+
+
+6. **Updating Code**
    If you pull any new code from GitHub while the project is running or already build:
    - You can either rerun the build command to ensure all changes are reflected:
      ```
@@ -70,7 +79,7 @@ Make sure you have the following installed on your machine:
    - Or, open the development containers for both the `user-service` and `frontend` containers to see the changes live.
    
 
-6. **Create and Manage Users**
+7. **Create and Manage Users**
    You can now register `http://localhost:3000/register`, log in `http://localhost:3000/login`, and manage users through the frontend interface.
 
 ## License
