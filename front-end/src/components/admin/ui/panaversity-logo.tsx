@@ -1,5 +1,5 @@
 import panaverse_logo from "@/public/red-p-logo.png";
-import { lusitana } from '@/src/app/admin/ui/fonts';
+import { lusitana } from './fonts';
 import Image from "next/image";
 
 export default function PanaversityLogo() {

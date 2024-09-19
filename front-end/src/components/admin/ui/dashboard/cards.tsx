@@ -5,7 +5,7 @@
 //   InboxIcon,
 // } from '@heroicons/react/24/outline';
 import { BanknoteIcon, ClockIcon, Users, InboxIcon } from 'lucide-react';
-import { lusitana } from '@/src/app/admin/ui/fonts';
+import { lusitana } from '../../ui/fonts';
 // import { fetchCardData } from '@/src/app/admin/lib/data';
 
 const iconMap = {

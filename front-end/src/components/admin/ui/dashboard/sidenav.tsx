@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import NavLinks from '@/src/app/admin/ui/dashboard/nav-links';
-import PanaversityLogo from '@/src/app/admin/ui/panaversity-logo';
+import NavLinks from '../../ui/dashboard/nav-links';
+import PanaversityLogo from '../../ui/panaversity-logo';
 // import { PowerIcon } from '@heroicons/react/24/outline';
 import { PowerIcon } from 'lucide-react';
 

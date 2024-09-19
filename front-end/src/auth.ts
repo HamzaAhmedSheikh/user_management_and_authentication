@@ -33,7 +33,8 @@ export async function adminAuth() {
   const session = await auth();
   if (!session) {
     console.log("[session] No cookies. Redirecting...");
-    redirect("/login");
+    // redirect("/login");
+    return null;
   }
   const token = session.access_token;
   try {

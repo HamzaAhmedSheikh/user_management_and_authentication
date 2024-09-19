@@ -2,8 +2,8 @@
 import { RotateCcwIcon } from 'lucide-react';
 import clsx from 'clsx';
 import Image from 'next/image';
-import { lusitana } from '@/src/app/admin/ui/fonts';
-import { LatestInvoice } from '@/src/app/admin/lib/definitions';
+import { lusitana } from '../../ui/fonts';
+import { LatestInvoice } from '../../lib/definitions';
 // import { fetchLatestInvoices } from '@/src/app/admin/lib/data';
 export default async function LatestInvoices() {
   // const latestInvoices = await fetchLatestInvoices();

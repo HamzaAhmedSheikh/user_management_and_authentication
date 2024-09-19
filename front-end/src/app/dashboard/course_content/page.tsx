@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { lusitana } from "../../ui/fonts";
+import { lusitana } from "@/src/components/admin/ui/fonts";
 
 export const metadata: Metadata = {
   title: "Course Content",

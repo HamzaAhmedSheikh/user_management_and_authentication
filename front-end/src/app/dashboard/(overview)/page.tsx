@@ -1,13 +1,13 @@
-import RevenueChart from '@/src/app/admin/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/src/app/admin/ui/dashboard/latest-invoices';
-import { lusitana } from '@/src/app/admin/ui/fonts';
+import RevenueChart from '@/src/components/admin/ui/dashboard/revenue-chart';
+import LatestInvoices from '@/src/components/admin/ui/dashboard/latest-invoices';
+import { lusitana } from '@/src/components/admin/ui/fonts';
 import { Suspense } from 'react';
 import {
   LatestInvoicesSkeleton,
   RevenueChartSkeleton,
   CardSkeleton,
-} from '@/src/app/admin/ui/skeletons';
-import CardWrapper from '@/src/app/admin/ui/dashboard/cards';
+} from '@/src/components/admin/ui/skeletons';
+import CardWrapper from '@/src/components/admin/ui/dashboard/cards';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

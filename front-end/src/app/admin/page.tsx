@@ -2,7 +2,7 @@ import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/public/panaverse_transparent_small.png";
-import { lusitana } from "./ui/fonts";
+import { lusitana } from "@/src/components/admin/ui/fonts";
 
 export default function Page() {
   return (
