@@ -58,3 +58,7 @@ app.include_router(teacher_router, prefix=f"{prefix}/teacher", tags=["Teacher"])
 app.include_router(student_router, prefix=f"{prefix}/student", tags=["Student"])
 app.include_router(oauth_router, prefix=f"{prefix}/oauth", tags=["OAuth"])
 app.include_router(auth_router, prefix=f"{prefix}/auth", tags=["Auth"])
+
+
+for route in app.routes:
+    print(route.path, route.name)
