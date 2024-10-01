@@ -1,6 +1,5 @@
 "use client"
-import {VerifyNumberSchema} from "@/src/schemas/userschema";
-import {RecoverPasswordSchema} from "@/src/schemas/userschema";
+import {VerifyEmailSchema} from "@/src/schemas/userschema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -13,7 +12,6 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/
 import { Input } from "../ui/input";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
-import ReactPhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { redirect, useRouter } from "next/navigation";
 
@@ -23,14 +21,14 @@ function ResetPassword() {
     const { toast } = useToast();
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const form = useForm<z.infer<typeof VerifyNumberSchema>>({
-        resolver: zodResolver(VerifyNumberSchema),
+    const form = useForm<z.infer<typeof VerifyEmailSchema>>({
+        resolver: zodResolver(VerifyEmailSchema),
         defaultValues: {
-            phone: "",
+            email: "",
         },
     });
     
-    const onsubmit = (values: z.infer<typeof VerifyNumberSchema>) => {
+    const onsubmit = (values: z.infer<typeof VerifyEmailSchema>) => {
         setError("");
         setSuccess("");
         
@@ -63,27 +61,24 @@ function ResetPassword() {
         >
             <FormProvider {...form}>
                 <form onSubmit={form.handleSubmit(onsubmit)} className="space-y-6">
-                <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                            <ReactPhoneInput
-                            country={'pk'}
-                            value={field.value}
-                            onChange={(phone) => field.onChange(phone)}
-                            disabled={isPending}
-                            placeholder="+921234567890"
-                            buttonStyle={{ backgroundColor: '#f9fafb' }}
-                            inputStyle={{ width: '100%' }}
-                            countryCodeEditable={false}
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                                <Input
+                                {...field}
+                                disabled={isPending}
+                                placeholder="example@gmail.com"
+                                type="email"
                             />
-                        </FormControl>
-                        </FormItem>
-                    )}
-                />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <Button disabled={isPending} type="submit" className="w-full">
                         Send OTP
                     </Button>

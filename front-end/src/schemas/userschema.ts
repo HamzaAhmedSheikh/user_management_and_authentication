@@ -19,9 +19,7 @@ export const RegisterSchema = z.object({
     password: z.string().min(6, {
         message: "Minimum 6 characters required",
     }),
-    phone: z.string().min(9, {
-        message: "Phone number is required",
-    }),
+    phone: z.string().optional(),
     affiliation: z.string().optional(),
 });
 
@@ -31,9 +29,9 @@ export const RecoverPasswordSchema = z.object({
     }),
 });
 
-export const VerifyNumberSchema = z.object({
-  phone: z.string().min(9, {
-      message: "Phone number is required",
+export const VerifyEmailSchema = z.object({
+  email: z.string().email({
+    message: "Email is required",
   }),
 });
 
@@ -41,8 +39,8 @@ export const UpdatePasswordSchema = z.object({
   otp: z.string().length(6, {
       message: "OTP is required",
   }),
-  phone: z.string().min(6, {
-      message: "Phone number is required",
+  email: z.string().email({
+    message: "Email is required",
   }),
   new_password: z.string().min(6, {
       message: "New Password is required",

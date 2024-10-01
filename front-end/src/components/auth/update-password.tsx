@@ -1,8 +1,7 @@
 "use client"
-import {UpdatePasswordSchema, VerifyNumberSchema} from "@/src/schemas/userschema";
+import {UpdatePasswordSchema, VerifyEmailSchema} from "@/src/schemas/userschema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
-import ReactPhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import * as z from "zod";
 import { useToast } from "../ui/use-toast";
@@ -16,25 +15,24 @@ import { CardWrapper } from "./card-wrapper";
 import { updatepassword } from "@/src/actions/update-password";
 import { useRouter } from "next/navigation";
 import { resetpassword } from "@/src/actions/recover-password";
-import { redirect } from "next/navigation";
 
 function UpdatePassword() {
     const router = useRouter();
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("")
-    const [phone, setPhone] = useState<string | undefined>("")
+    const [email, setEmail] = useState<string | undefined>("");
     const { toast } = useToast();
     const [isPending, startTransition] = useTransition();
     const form = useForm<z.infer<typeof UpdatePasswordSchema>>({
         resolver: zodResolver(UpdatePasswordSchema),
         defaultValues: {
             otp: "",
-            phone: "",
+            email: "",
             new_password: ""
         },
     });
 
-    const sendOTP = (values: z.infer<typeof VerifyNumberSchema>) => {
+    const sendOTP = (values: z.infer<typeof VerifyEmailSchema>) => {
         setError("");
         setSuccess("");
         startTransition(() => {
@@ -94,7 +92,7 @@ function UpdatePassword() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
                     <div className="space-y-4">
                         <>
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="phone"
                                 render={({ field }) => (
@@ -123,6 +121,45 @@ function UpdatePassword() {
                                     </Button>
                             </div>
                             <FormMessage />
+                                    </FormItem>
+                                )}
+                            /> */}
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Email</FormLabel>
+                                        <div className="flex items-center w-full">
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    disabled={isPending}
+                                                    placeholder="user@example.com"
+                                                    type="email"
+                                                    onChange={(e) => {
+                                                        const email = e.target.value;
+                                                        field.onChange(email);
+                                                        setEmail(email);
+                                                    }}
+                                                />
+                                            </FormControl>
+                                            <Button
+                                                size="sm"
+                                                variant="link"
+                                                onClick={() => {
+                                                    if (email) {
+                                                        sendOTP({ email });
+                                                    } else {
+                                                        // Handle the case where email is undefined
+                                                        console.error("Email is undefined");
+                                                    }
+                                                }}
+                                            >
+                                                Send OTP
+                                            </Button>
+                                        </div>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />

@@ -9,10 +9,10 @@ export const updatepassword = async (values: z.infer<typeof UpdatePasswordSchema
     return { error: "Invalid fields!" };
   }
 
-  const { otp, phone, new_password } = validatedFields.data;
+  const { otp, email, new_password } = validatedFields.data;
 
   // Send Data in JSON Format
-  const update_password = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/auth/verify-otp-update-password?phone=${phone}&otp=${otp}&new_password=${new_password}`, {
+  const update_password = await fetch(`${process.env.BACKEND_AUTH_SERVER_URL}/api/v1/auth/verify-otp-update-password?email=${email}&otp=${otp}&new_password=${new_password}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
