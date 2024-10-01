@@ -60,5 +60,5 @@ app.include_router(oauth_router, prefix=f"{prefix}/oauth", tags=["OAuth"])
 app.include_router(auth_router, prefix=f"{prefix}/auth", tags=["Auth"])
 
 
-for route in app.routes:
-    print(route.path, route.name)
+# for route in app.routes:
+#     print(route.path, route.name)

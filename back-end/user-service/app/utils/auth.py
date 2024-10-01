@@ -1,4 +1,3 @@
-#auth.py
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -8,18 +7,16 @@ from fastapi.security import OAuth2PasswordBearer
 from app.models.user import User
 from app.database import get_session
 from app.settings import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from app.services.whatsapp_message import send_whatsapp_message
-import hashlib
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/user/login")
 
 
-def verify_password(plain_password, hashed_password):
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def hash_password(password):
+def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 
@@ -34,7 +31,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-def authenticate_user(session: Session, email: str, password: str):
+def authenticate_user(session: Session, email: str, password: str) -> User:
     user = session.exec(select(User).where(User.email == email)).first()
     if not user or not verify_password(password, user.password):
         raise HTTPException(
@@ -42,10 +39,18 @@ def authenticate_user(session: Session, email: str, password: str):
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+        
+    if not user.is_verified:  # Check if the user is verified
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User is not verified",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
     return user
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)):
+async def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -58,8 +63,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: Session
             raise credentials_exception
     except JWTError:
         raise credentials_exception
+    
     user = session.exec(select(User).where(User.email == email)).first()
+    
     if user is None:
         raise credentials_exception
+    
+    if not user.is_verified:  # Check if the user is verified
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User is not verified",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
     return user
-

@@ -1,25 +1,35 @@
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Request
-from app.models.user import User, UserCreate, UserType, UserRead
-from app.models.auth_token import AuthToken
-from app.models.teacher import Teacher
+from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.user import MessageResponse
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
-from app.utils.auth import hash_password, get_current_user, authenticate_user, create_access_token
-from app.services.whatsapp_message import create_and_send_magic_link
 from app.database import get_session
-from datetime import datetime, timedelta
-from jose import JWTError, jwt
+from datetime import datetime
+from jose import jwt
 from app.settings import SECRET_KEY, ALGORITHM
-from app.models.verification_token import VerificationToken, VerificationTokenType
+from app.models.verification_token import VerificationToken
 from app.services.email_message import send_user_verifies_success_email
 
 verification_router = APIRouter()
 
 
 @verification_router.get("/verify", response_model=MessageResponse)
-async def verify_user(token: str, request: Request, session: Session = Depends(get_session)):
+async def verify_user_by_token_hash(token: str, session: Session = Depends(get_session)):
+    """
+    Verify a user's email address using a verification token.
+
+    This endpoint checks the validity of a verification token stored in the VerificationToken table,
+    marks the user as verified, and sends a success email.
+
+    Args:
+    - token (str): The hash_id of the verification token.
+
+    Returns:
+    - dict: A message response indicating verification success or failure.
+
+    Raises:
+    - HTTPException: 400 if the verification link is invalid, expired, or already used.
+    - HTTPException: 404 if the user is not found.
+    """
+    
     # Find the verification token by hash
     verification_token = session.exec(
         select(VerificationToken).where(VerificationToken.hash_id == token)
@@ -34,9 +44,11 @@ async def verify_user(token: str, request: Request, session: Session = Depends(g
 
     # Decode the original token to validate expiration and content
     try:
-        payload = jwt.decode(verification_token.token_value, SECRET_KEY, algorithms=[ALGORITHM])
+        jwt.decode(verification_token.token_value, SECRET_KEY, algorithms=[ALGORITHM])
+        
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=400, detail="Verification link has expired")
+    
     except jwt.JWTError:
         raise HTTPException(status_code=400, detail="Invalid token")
 
@@ -55,9 +67,11 @@ async def verify_user(token: str, request: Request, session: Session = Depends(g
     session.commit()
     session.refresh(user)
     send_user_verifies_success_email(user.email, user.full_name)
+    
     # Mark the token as used
     verification_token.used_at = datetime.utcnow()
     session.add(verification_token)
     session.commit()
     session.refresh(verification_token)
+    
     return {"message": "User verified successfully"}

@@ -12,7 +12,7 @@ class TeacherBase(SQLModel):
 
 class Teacher(TeacherBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: str = Field(foreign_key="user.id")
+    user_id: str = Field(foreign_key="user_account.id")
 
     user: Optional["User"] = Relationship(back_populates="teacher")
 

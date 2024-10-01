@@ -26,3 +26,6 @@ SMTP_PORT = config("SMTP_PORT", cast=int)
 SMTP_USER = config("SMTP_USER", cast=str)
 SMTP_PASSWORD = config("SMTP_PASSWORD", cast=str)
 SMTP_SENDER = config("SMTP_SENDER", cast=str)
+
+# URL Configurations for verification
+FRONTEND_VERIFICATION_URL=config("FRONTEND_VERIFICATION_URL", cast=str, default="http://localhost:3000")

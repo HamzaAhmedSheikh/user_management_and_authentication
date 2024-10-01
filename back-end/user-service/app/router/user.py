@@ -1,25 +1,20 @@
 from typing import Optional, Annotated
-from fastapi import APIRouter, Depends, HTTPException, status, Request
-from app.models.user import User, UserCreate, UserType, UserRead, UserUpdate, UserLogin
-from app.models.auth_token import AuthToken
+from fastapi import APIRouter, Depends, HTTPException
+from app.models.user import User, UserCreate, UserType, UserRead, UserUpdate
 from app.models.teacher import Teacher
-from app.schemas.user import LoginRequest, TokenResponse, MessageResponse
+from app.schemas.user import TokenResponse, MessageResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 from app.utils.auth import hash_password, get_current_user, authenticate_user, create_access_token
-from app.services.whatsapp_message import create_and_send_magic_link
+from app.services.magic_link import create_and_send_magic_link
 from app.database import get_session
-from datetime import datetime, timedelta
-from jose import JWTError, jwt
-from app.settings import SECRET_KEY, ALGORITHM
-from app.models.verification_token import VerificationToken, VerificationTokenType
-from app.services.email_message import send_user_signup_email, send_user_magic_link_email
 
 user_router = APIRouter()
 
 
 @user_router.post("/register", response_model=UserRead)
 async def register_user(new_user: UserCreate, session: Session = Depends(get_session)):
+    # Check if user already exists
     db_user = session.exec(select(User).where(
         (User.email == new_user.email) | (User.phone == new_user.phone)
     )).first()
@@ -28,6 +23,7 @@ async def register_user(new_user: UserCreate, session: Session = Depends(get_ses
         raise HTTPException(
             status_code=409, detail="User with these credentials already exists")
 
+    # Create a new user object
     user = User(
         full_name=new_user.full_name,
         email=new_user.email,
@@ -38,19 +34,20 @@ async def register_user(new_user: UserCreate, session: Session = Depends(get_ses
         user_type=new_user.user_type
     )
 
+    # Add the user to the session
+    session.add(user)
+    session.commit()  # Commit to get the user ID for teacher creation
+    session.refresh(user)
+    
+    # Handle Teacher creation if applicable
     if new_user.user_type == UserType.TEACHER:
         teacher = Teacher(user_id=user.id, department="Unassigned")
         session.add(teacher)
         session.commit()
 
     # Use the helper function to create and send the magic link
-    await create_and_send_magic_link(user, new_user.phone, session)
-    send_user_signup_email(user.email, user.full_name)
+    await create_and_send_magic_link(user, session)
     
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-
     return user
 
 
@@ -67,20 +64,36 @@ async def login_for_access_token(
 #resend link
 @user_router.post("/resend-link", response_model=MessageResponse)
 async def resend_verification_link(
-    user: User = Depends(get_current_user),
+    email: str,
     session: Session = Depends(get_session)
 ):
-    if user.is_verified:
-        raise HTTPException(status_code=400, detail="User is already verified")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email must be provided")
+
+    user = session.exec(select(User).where(User.email == email)).first()
+    
+    # message
+    message = {"message": "A verification email has been sent if an account is associated with this email address."}
+    
+    # If user is not found, Log the request for security monitoring
+    if not user:
+        # Do not reveal if the email is associated with an account
+        print(f"Resend verification link requested for non-existent email: {email}")
+        return message
+    else:
+        # If the user is already verified
+        if user.is_verified:
+            return {"message": "User is already verified"}
 
     # Use the helper function to create and send the magic link
-    await create_and_send_magic_link(user, user.phone, session)
-    return {"message": "Verification link resent successfully"}
+    await create_and_send_magic_link(user, session)
+    
+    return message
 
 # logout 
 @user_router.post("/logout", response_model=MessageResponse)
 async def logout_user(access_token: str, refresh_token: Optional[str] = None):
-    return {"message": "Logout successful. The token has been invalidated."}
+    return {"message": "Logout successful. The token has been invalidated."}  
 
 
 # profile section

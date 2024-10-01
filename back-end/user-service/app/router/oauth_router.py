@@ -1,6 +1,3 @@
-# router/oauth_router.py
-from urllib import response
-from fastapi import Header
 from fastapi import APIRouter, HTTPException, Depends
 from jose import jwt
 from app.utils.auth import oauth2_scheme

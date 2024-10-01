@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field
 from typing import Optional
 from uuid import uuid4
 from datetime import datetime
@@ -11,7 +11,7 @@ class AuthTokenType(str, Enum):
 class AuthToken(SQLModel, table=True):
     __tablename__ = "auth_token"
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
-    user_id: str = Field(foreign_key="user.id")
+    user_id: str = Field(foreign_key="user_account.id")
     token_value: str
     token_type: AuthTokenType
     created_at: datetime = Field(default_factory=datetime.utcnow)

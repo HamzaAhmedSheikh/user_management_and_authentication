@@ -4,6 +4,8 @@ import smtplib
 import ssl
 from email.mime.text import MIMEText
 from app import settings
+from app.models.verification_token import VerificationTokenType
+
 
 def send_email(email, subject, body):
     smtp_server = settings.SMTP_SERVER
@@ -136,17 +138,23 @@ def build_html_magic_link_email(name: str, sender_email: str, magic_link: str) -
     </html>
     """
 
-def send_user_magic_link_email(email: str, name: str, magic_link: str):
+# Function to send email with the magic link
+def send_user_magic_link_email(email: str, name: str, magic_link: str, purpose: VerificationTokenType):
     """
-    Send a magic link to the user's email address
+    Send a magic link to the user's email address.
     Args:
       email (str): The user's email address
       name (str): The user's name
       magic_link (str): The magic link to be sent
+      purpose (str): The purpose of the email (email_verification, password_reset, etc.)
     Returns:
       dict: A dictionary containing a success message
     """
-    subject = "Panaversity - Verify Your Email Address"
+    if purpose == VerificationTokenType.EMAIL_VERIFICATION:
+        subject = "Panaversity - Verify Your Email Address"
+    elif purpose == VerificationTokenType.PASSWORD_RESET:
+        subject = "Panaversity - Reset Your Password"
+    
     body = build_html_magic_link_email(name, settings.SMTP_SENDER, magic_link)
     send_email(email, subject, body)
     return {"message": "Email sent successfully"}
