@@ -3,6 +3,7 @@ from app.schemas.user import MessageResponse
 from sqlmodel import Session, select
 from app.database import get_session
 from datetime import datetime
+from app.models.user import User
 from jose import jwt
 from app.settings import SECRET_KEY, ALGORITHM
 from app.models.verification_token import VerificationToken
